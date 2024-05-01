@@ -145,6 +145,10 @@ public class SecurityKeyManager {
         init(application, config);
     }
 
+    public boolean initialized(){
+        return config != null;
+    }
+
     /**
      * This method initializes SecurityKeyManager.
      *
@@ -400,6 +404,10 @@ public class SecurityKeyManager {
         }
 
         HwTimber.i("Unhandled transport %s", transport.getClass().getSimpleName());
+    }
+
+    public static String getLastTagId(){
+        return NfcTagManager.currentTagId;
     }
 
     @AnyThread

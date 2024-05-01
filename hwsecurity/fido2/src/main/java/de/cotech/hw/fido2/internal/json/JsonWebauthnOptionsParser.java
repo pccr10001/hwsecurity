@@ -60,7 +60,13 @@ public class JsonWebauthnOptionsParser {
 
         PublicKeyCredentialRpEntity rp = jsonToRpEntity(publicKeyObject.getJSONObject("rp"));
         PublicKeyCredentialUserEntity user = jsonToUserEntity(publicKeyObject.getJSONObject("user"));
-        byte[] challenge = jsonObjectOrArrayToByteArray(publicKeyObject.getJSONObject("challenge"));
+        byte[] challenge;
+        if(publicKeyObject.get("challenge") instanceof String){
+            challenge= jsonObjectOrArrayToByteArray(publicKeyObject.getString("challenge"));
+        }else{
+            challenge = jsonObjectOrArrayToByteArray(publicKeyObject.getJSONObject("challenge"));
+        }
+
         List<PublicKeyCredentialParameters> pubKeyCredParams = jsonToPubKeyCredParamsList(publicKeyObject.optJSONArray("pubKeyCredParams"));
         Long timeout = !publicKeyObject.isNull("timeout") ? publicKeyObject.getLong("timeout") : null;
         AttestationConveyancePreference attestationConveyancePreference =
@@ -147,6 +153,10 @@ public class JsonWebauthnOptionsParser {
         AuthenticatorAttachment authenticatorAttachment = AuthenticatorAttachment.fromString(
                 authenticatorSelection.optString("authenticatorAttachment", null));
         boolean requireResidentKey = authenticatorSelection.optBoolean("requireResidentKey", false);
+        String residentKey = authenticatorSelection.optString("residentKey", "discouraged");
+        if(!requireResidentKey){
+            requireResidentKey = residentKey.equals("required") || residentKey.equals("preferred");
+        }
         UserVerificationRequirement userVerification = UserVerificationRequirement.fromString(
                 authenticatorSelection.optString("userVerification", null));
 
@@ -186,6 +196,8 @@ public class JsonWebauthnOptionsParser {
             for (int i = 0; i < jsonArray.length(); i++) {
                 baos.write(jsonArray.getInt(i));
             }
+        }else if (object instanceof String) {
+            return ((String) object).getBytes();
         }
         return baos.toByteArray();
     }
@@ -199,7 +211,7 @@ public class JsonWebauthnOptionsParser {
             throws JSONException {
         JSONObject publicKeyObject = jsonObject.getJSONObject("publicKey");
 
-        byte[] challenge = jsonObjectOrArrayToByteArray(publicKeyObject.getJSONObject("challenge"));
+        byte[] challenge = jsonObjectOrArrayToByteArray(publicKeyObject.getJSONArray("challenge"));
         Long timeout = !publicKeyObject.isNull("timeout") ? publicKeyObject.getLong("timeout") : null;
         String rpId = publicKeyObject.optString("rpId", null);
         List<PublicKeyCredentialDescriptor> allowCredentials = jsonToPubKeyKeyCredDescriptorList(publicKeyObject.optJSONArray("allowCredentials"));

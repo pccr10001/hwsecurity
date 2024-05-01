@@ -38,13 +38,18 @@ public abstract class PublicKeyCredentialGet extends WebauthnCommand {
     @Nullable
     public abstract String clientPin();
     public abstract boolean lastAttemptOk();
+    public abstract byte[] clientDataHash();
 
     public static PublicKeyCredentialGet create(String origin, PublicKeyCredentialRequestOptions options) {
-        return new AutoValue_PublicKeyCredentialGet(origin, options, null, false);
+        return new AutoValue_PublicKeyCredentialGet(origin, options, null, false, null);
+    }
+
+    public static PublicKeyCredentialGet create(String origin, PublicKeyCredentialRequestOptions options, @Nullable byte[] clientDataHash) {
+        return new AutoValue_PublicKeyCredentialGet(origin, options, null, false, clientDataHash);
     }
 
     @Override
     public PublicKeyCredentialGet withClientPin(String clientPin, boolean lastAttemptOk) {
-        return new AutoValue_PublicKeyCredentialGet(origin(), options(), clientPin, lastAttemptOk);
+        return new AutoValue_PublicKeyCredentialGet(origin(), options(), clientPin, lastAttemptOk, clientDataHash());
     }
 }

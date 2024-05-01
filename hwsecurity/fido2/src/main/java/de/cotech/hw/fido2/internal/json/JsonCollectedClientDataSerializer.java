@@ -25,8 +25,11 @@
 package de.cotech.hw.fido2.internal.json;
 
 
+import android.util.Log;
 import de.cotech.hw.fido2.domain.CollectedClientData;
 import de.cotech.hw.fido2.internal.utils.WebsafeBase64;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,11 +38,10 @@ public class JsonCollectedClientDataSerializer {
     public String clientClientDataToJson(CollectedClientData clientData) {
         try {
             JSONObject result = new JSONObject();
-            result.put("type", clientData.type());
-            result.put("origin", clientData.origin());
             result.put("challenge", WebsafeBase64.encodeToString(clientData.challenge()));
-            result.put("hashAlgorithm", clientData.hashAlgorithm());
-            return result.toString();
+            result.put("origin", StringUtils.removeEnd(clientData.origin(), "/"));
+            result.put("type", clientData.type());
+            return StringEscapeUtils.unescapeJava(result.toString());
         } catch (JSONException e) {
             throw new IllegalArgumentException(e);
         }

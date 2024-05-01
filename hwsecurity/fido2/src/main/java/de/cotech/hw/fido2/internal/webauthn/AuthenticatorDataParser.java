@@ -44,7 +44,7 @@ public class AuthenticatorDataParser {
 
     private static final int LENGTH_AAGUID = 16;
 
-    AuthenticatorData fromBytes(byte[] bytes) throws IOException {
+    public AuthenticatorData fromBytes(byte[] bytes) throws IOException {
         ByteBuffer buf = ByteBuffer.wrap(bytes).duplicate();
         buf.order(ByteOrder.BIG_ENDIAN);
 

@@ -123,7 +123,7 @@ public class UsbConnectionDispatcher {
 
     @UiThread
     public void onActive() {
-        context.registerReceiver(usbBroadcastReceiver, intentFilter);
+        context.registerReceiver(usbBroadcastReceiver, intentFilter, 4);
     }
 
     @UiThread
@@ -162,7 +162,11 @@ public class UsbConnectionDispatcher {
 
         Intent answerBroadcastIntent = new Intent(ACTION_USB);
         answerBroadcastIntent.setPackage(context.getApplicationInfo().packageName);
-        PendingIntent answerPendingIntent = PendingIntent.getBroadcast(context, 0, answerBroadcastIntent, 0);
+        int flags = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent answerPendingIntent = PendingIntent.getBroadcast(context, 0, answerBroadcastIntent, flags);
 
         HwTimber.d("Requesting permission for %s", usbDevice.getDeviceName());
         usbManager.requestPermission(usbDevice, answerPendingIntent);

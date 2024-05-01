@@ -131,10 +131,14 @@ public class NfcConnectionDispatcher {
             throw new IllegalStateException("Method must not be called if nfcAdapter is null!");
         }
         Intent intent = new Intent(activity, activity.getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent tagIntent = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        int flags = PendingIntent.FLAG_CANCEL_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent tagIntent = PendingIntent.getActivity(activity, 0, intent, flags);
         IntentFilter tag = new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED);
-        nfcAdapter.enableForegroundDispatch(activity, tagIntent, new IntentFilter[] { tag },
-                new String[][] { new String[] { IsoDep.class.getName() } });
+        nfcAdapter.enableForegroundDispatch(activity, tagIntent, new IntentFilter[]{tag},
+                new String[][]{new String[]{IsoDep.class.getName()}});
     }
 
     @UiThread

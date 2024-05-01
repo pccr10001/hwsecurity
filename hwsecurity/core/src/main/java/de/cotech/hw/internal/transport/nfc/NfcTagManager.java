@@ -52,6 +52,8 @@ public class NfcTagManager {
     private final boolean enableDebugLogging;
     private final boolean enablePersistentNfcConnection;
 
+    public static String currentTagId = "";
+
     private final HashMap<Tag, ManagedNfcTag> managedNfcTags = new HashMap<>();
 
     public static NfcTagManager createInstance(OnDiscoveredNfcTagListener callback,
@@ -90,6 +92,8 @@ public class NfcTagManager {
                 HwTimber.d("NFC security key already managed, ignoring (%s)",  getNfcTagIdentifier(nfcTag));
                 return;
             }
+
+            currentTagId = getNfcTagIdentifier(nfcTag);
 
             ManagedNfcTag managedNfcTag = createManagedNfcTag(nfcTag);
             managedNfcTags.put(nfcTag, managedNfcTag);

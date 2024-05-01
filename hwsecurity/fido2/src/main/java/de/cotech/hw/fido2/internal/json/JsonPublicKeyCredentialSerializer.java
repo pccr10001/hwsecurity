@@ -54,28 +54,28 @@ public class JsonPublicKeyCredentialSerializer {
     private JSONObject authenticatorResponseToJson(AuthenticatorResponse authenticatorResponse) {
         try {
             JSONObject result = new JSONObject();
-            result.put("clientDataJsonB64", WebsafeBase64.encodeToString(authenticatorResponse.clientDataJson()));
+            result.put("clientDataJson", WebsafeBase64.encodeToString(authenticatorResponse.clientDataJson()));
             if (authenticatorResponse instanceof AuthenticatorAttestationResponse) {
                 AuthenticatorAttestationResponse authenticatorAttestationResponse =
                         (AuthenticatorAttestationResponse) authenticatorResponse;
                 String attestationObjectB64 = WebsafeBase64.encodeToString(
                         authenticatorAttestationResponse.attestationObject());
-                result.put("attestationObjectB64", attestationObjectB64);
+                result.put("attestationObject", attestationObjectB64);
             }
             if (authenticatorResponse instanceof AuthenticatorAssertionResponse) {
                 AuthenticatorAssertionResponse authenticatorAttestationResponse =
                         (AuthenticatorAssertionResponse) authenticatorResponse;
                 String authenticatorDataB64 = WebsafeBase64.encodeToString(
                         authenticatorAttestationResponse.authenticatorData());
-                result.put("authenticatorDataB64", authenticatorDataB64);
+                result.put("authenticatorData", authenticatorDataB64);
                 String signatureB64 = WebsafeBase64.encodeToString(
                         authenticatorAttestationResponse.signature());
-                result.put("signatureB64", signatureB64);
+                result.put("signature", signatureB64);
 
                 byte[] userHandle = authenticatorAttestationResponse.userHandle();
                 if (userHandle != null) {
                     String userHandleB64 = WebsafeBase64.encodeToString(userHandle);
-                    result.put("userHandleB64", userHandleB64);
+                    result.put("userHandle", userHandleB64);
                 }
             }
             return result;

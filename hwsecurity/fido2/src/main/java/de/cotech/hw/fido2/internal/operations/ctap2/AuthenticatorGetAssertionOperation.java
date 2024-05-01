@@ -151,7 +151,7 @@ public class AuthenticatorGetAssertionOperation extends
         CollectedClientData collectedClientData =
                 CollectedClientData.create(CLIENT_DATA_TYPE_GET, options.challenge(), origin, "SHA-256");
         String clientDataJson = jsonCollectedClientDataSerializer.clientClientDataToJson(collectedClientData);
-        byte[] clientDataHash = HashUtil.sha256(clientDataJson);
+        byte[] clientDataHash = credentialGet.clientDataHash() != null ? credentialGet.clientDataHash() : HashUtil.sha256(clientDataJson);
 
         if (pinToken != null) {
             byte[] pinAuth = pinProtocolV1.calculatePinAuth(pinToken, clientDataHash);
@@ -192,7 +192,7 @@ public class AuthenticatorGetAssertionOperation extends
     }
 
     private byte[] determinePublicKeyCredentialId(PublicKeyCredentialGet credentialCreate,
-            AuthenticatorGetAssertionResponse response) throws IOException {
+                                                  AuthenticatorGetAssertionResponse response) throws IOException {
         byte[] credential;
         List<PublicKeyCredentialDescriptor> requestedCredentials =
                 credentialCreate.options().allowCredentials();
