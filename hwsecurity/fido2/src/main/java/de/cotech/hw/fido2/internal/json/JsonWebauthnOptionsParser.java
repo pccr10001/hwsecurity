@@ -215,6 +215,9 @@ public class JsonWebauthnOptionsParser {
         Long timeout = !publicKeyObject.isNull("timeout") ? publicKeyObject.getLong("timeout") : null;
         String rpId = publicKeyObject.optString("rpId", null);
         List<PublicKeyCredentialDescriptor> allowCredentials = jsonToPubKeyKeyCredDescriptorList(publicKeyObject.optJSONArray("allowCredentials"));
+        if(allowCredentials == null){
+            allowCredentials = jsonToPubKeyKeyCredDescriptorList(publicKeyObject.optJSONArray("allowList"));
+        }
         UserVerificationRequirement userVerification = UserVerificationRequirement.fromString(
                 publicKeyObject.optString("userVerification", null));
 
